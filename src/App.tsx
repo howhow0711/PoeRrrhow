@@ -201,7 +201,7 @@ function App() {
     <main className="app-shell compact-app">
       <section className="toolbar">
         <div>
-          <h1>我愛小寶</h1>
+          <h1>POE 地圖中文 Regex</h1>
         </div>
         <label className="toggle compact-toggle">
           <input
