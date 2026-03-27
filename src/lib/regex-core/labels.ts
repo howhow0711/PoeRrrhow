@@ -1,0 +1,97 @@
+type LabelOverride = {
+  officialZh?: string;
+  twAbbr?: string;
+  aliases?: string[];
+};
+
+const slugLabels: Record<string, LabelOverride> = {
+  "players-are-cursed-with-vulnerability": { twAbbr: "脆弱", aliases: ["脆弱詛咒"] },
+  "players-are-cursed-with-temporal-chains": { twAbbr: "時空鎖鏈", aliases: ["時鎖"] },
+  "players-are-cursed-with-elemental-weakness": { twAbbr: "元素要害", aliases: ["元要"] },
+  "players-are-cursed-with-enfeeble": { twAbbr: "衰弱" },
+  "monsters-reflect-of-physical-damage": { twAbbr: "物反" },
+  "monsters-reflect-of-elemental-damage": { twAbbr: "元反" },
+  "players-cannot-regenerate-life-mana-or-energy-shield": { twAbbr: "無回", aliases: ["不能回復"] },
+  "players-have-less-recovery-rate-of-life-and-energy-shield": { twAbbr: "少回" },
+  "players-gain-reduced-flask-charges": { twAbbr: "少藥充" },
+  "players-have-reduced-effect-of-non-curse-auras-from-skills": { twAbbr: "減光環" },
+  "monsters-gain-of-their-physical-damage-as-extra-chaos-damage-monsters-inflict-withered-for-seconds-on-hit": {
+    twAbbr: "物額混",
+  },
+  "monsters-deal-extra-physical-damage-as-fire": { twAbbr: "物轉火" },
+  "monsters-deal-extra-physical-damage-as-cold": { twAbbr: "物轉冰" },
+  "monsters-deal-extra-physical-damage-as-lightning": { twAbbr: "物轉雷" },
+  "area-contains-two-unique-bosses": { twAbbr: "雙王" },
+  "area-has-patches-of-burning-ground": { officialZh: "地圖含有燃燒地面", twAbbr: "燃燒地" },
+  "area-has-patches-of-chilled-ground": { officialZh: "地圖含有冰緩地面", twAbbr: "冰緩地" },
+  "area-has-patches-of-shocked-ground-which-increase-damage-taken-by": {
+    officialZh: "區域內有數道增加 #% 承受傷害的感電地面",
+    twAbbr: "感電地",
+  },
+  "area-has-patches-of-desecrated-ground": { officialZh: "地圖含有腐化地面", twAbbr: "腐化地" },
+  "area-has-patches-of-consecrated-ground": { officialZh: "區域有數道奉獻地面", twAbbr: "奉獻地" },
+  "monsters-cannot-be-leeched-from": { officialZh: "怪物無法被偷取", twAbbr: "無偷" },
+  "monsters-have-chance-to-avoid-elemental-ailments": { twAbbr: "抗異常" },
+  "monsters-have-a-chance-to-avoid-poison-impale-and-bleeding": { twAbbr: "抗中毒流血" },
+  "monsters-have-a-chance-to-suppress-spell-damage": { twAbbr: "法壓" },
+  "monsters-attacks-have-chance-to-impale-on-hit": { twAbbr: "穿刺" },
+  "monsters-fire-additional-projectiles": { twAbbr: "多投" },
+  "unique-bosses-are-possessed": { officialZh: "傳奇頭目被附身", twAbbr: "附身王" },
+  "buffs-on-players-expire-faster": { twAbbr: "快失效" },
+};
+
+const idLabels: Record<number, LabelOverride> = {
+  [-1870026958]: { officialZh: "增加 #% 稀有怪物的數量|稀有怪物有 1 個額外詞綴", twAbbr: "稀怪+1" },
+  [-1800824096]: { officialZh: "怪物傷害穿透 15% 元素抗性", twAbbr: "怪穿抗" },
+  [-1506737291]: { officialZh: "增加 #% 怪物移動速度|增加 #% 怪物攻擊速度|增加 #% 怪物施放速度", twAbbr: "怪加速" },
+  [-1457795514]: { officialZh: "怪物擊中時造成中毒|怪物擊中的所有傷害都可以造成中毒|怪物增加 100% 中毒持續時間", twAbbr: "必中毒" },
+  [-1230902782]: { officialZh: "怪物的所有傷害都可以造成點燃、冰凍和感電|怪物擊中時造成點燃、冰凍和感電", twAbbr: "全異常" },
+  [-1210904808]: { officialZh: "+50% 怪物物理傷害減免|+35% 怪物的混沌抗性|+55% 怪物的元素抗性", twAbbr: "怪高抗" },
+  [-1086229775]: { officialZh: "怪物獲得相當於它們 #% 物理傷害的額外混沌傷害", twAbbr: "高額混" },
+  [-1020811466]: { officialZh: "區域含有迷宮陷阱", twAbbr: "迷宮陷阱" },
+  [-1016990964]: { officialZh: "區域中的稀有怪物為塑者之觸", twAbbr: "塑者稀怪" },
+  [-799369756]: { officialZh: "玩家有 #% 更少防禦", twAbbr: "少防" },
+  [-742141454]: { officialZh: "怪物獲得 #% 最大生命的額外最大能量護盾", twAbbr: "高大生" },
+  [-699853279]: { officialZh: "減少 #% 怪物承受的暴擊額外傷害", twAbbr: "減暴擊傷" },
+  [-677609632]: { officialZh: "區域含有溺水之球", twAbbr: "溺水球" },
+  [-646463743]: { officialZh: "釋界者干擾玩家", twAbbr: "釋界者" },
+  [-520858291]: { officialZh: "區域內有會移動的烙印地面，會施加隨機印記", twAbbr: "移動印記" },
+  [-356807455]: { officialZh: "稀有怪物擁有不穩定核心", twAbbr: "核心怪" },
+  [-353866601]: { officialZh: "地圖頭目有一名追憶頭目陪同", twAbbr: "追憶王" },
+  [-352946674]: { officialZh: "怪物有 +50% 機率格擋攻擊傷害", twAbbr: "攻擊格擋" },
+  [-326897606]: { officialZh: "傳奇怪物擁有一個隨機神龕效果", twAbbr: "神龕王" },
+  [-276176924]: { officialZh: "玩家每秒從偷取獲得的生命、魔力與能量護盾總恢復量減少 #%", twAbbr: "偷取恢復降" },
+  [-231352045]: { officialZh: "怪物技能附加 3 次連鎖|怪物投射物撞到地形時可以連鎖", twAbbr: "超連鎖" },
+  [-122129388]: { officialZh: "增加 #% 怪物傷害", twAbbr: "怪高增傷" },
+  [-55469102]: { officialZh: "怪物 +100% 壓抑法術傷害率", twAbbr: "滿法壓" },
+  [-30056495]: { officialZh: "怪物不會被暈眩|怪物的行動速度不能被調整至低於基礎值|怪物的移動速度不能被調整至低於基礎值", twAbbr: "不暈定速" },
+  [145852868]: { officialZh: "%# 更多怪物生命", twAbbr: "超多怪血" },
+  [192226459]: { officialZh: "怪物增加 100% 範圍效果|怪物發射 2 額外投射物", twAbbr: "範圍多投" },
+  [283278925]: { officialZh: "玩家 -20% 全部最大抗性", twAbbr: "負20大抗" },
+  [358866626]: { officialZh: "玩家被脆弱詛咒|玩家被時空鎖鏈詛咒|玩家被元素要害詛咒", twAbbr: "三詛咒" },
+  [363247990]: { officialZh: "稀有怪物死亡時有 25% 機率裂變", twAbbr: "裂變怪" },
+  [541806359]: { officialZh: "區域含有不穩定觸手惡魔", twAbbr: "觸手惡魔" },
+  [728127970]: { officialZh: "玩家受到染血鋸刃襲擊", twAbbr: "鋸刃" },
+  [1002562134]: { officialZh: "怪物擊中時造成 2 層纏人藤蔓", twAbbr: "藤蔓" },
+  [1197865431]: { officialZh: "玩家身上的增益效果加速 100% 失效", twAbbr: "增益快失效" },
+  [1259478420]: { officialZh: "怪物獲得相當於它們 #% 物理傷害的隨機元素額外傷害", twAbbr: "隨機三元素" },
+  [1358293706]: { officialZh: "怪物最大暴擊球 +1|怪物擊中時獲得 1 顆暴擊球", twAbbr: "暴球上限" },
+  [1362268742]: { officialZh: "怪物最大耐力球 +1|怪物被擊中時獲得 1 顆耐力球", twAbbr: "耐球上限" },
+  [1417707513]: { officialZh: "玩家身上藥劑效果減少 40%", twAbbr: "少藥效" },
+  [1441366109]: { officialZh: "區域中的稀有怪物死亡後會暫時復活", twAbbr: "復活稀怪" },
+  [1474220255]: { officialZh: "怪物增加 #% 暴擊率|+%# 怪物暴擊加成", twAbbr: "怪超暴" },
+  [1639797583]: { officialZh: "區域含有灼熱總督符文", twAbbr: "灼熱符文" },
+  [1673353923]: { officialZh: "玩家使用藥劑時會被隕石鎖定", twAbbr: "藥劑隕石" },
+  [1715183255]: { officialZh: "怪物反射 20% 物理傷害|怪物反射 20% 元素傷害", twAbbr: "20雙反" },
+  [1762786407]: { officialZh: "怪物最大狂怒球 +1|怪物擊中時獲得 1 顆狂怒球", twAbbr: "狂球上限" },
+  [1799964834]: { officialZh: "玩家技能施加於友方的光環也會影響敵人", twAbbr: "光環害敵" },
+  [1982218828]: { officialZh: "玩家有 #% 更少的範圍效果", twAbbr: "少範圍" },
+  [2039847472]: { officialZh: "怪物身上的減益效果加速 100% 失效", twAbbr: "減益快失效" },
+};
+
+export function getLabelOverride(id: number, slug: string): LabelOverride {
+  return {
+    ...(slugLabels[slug] ?? {}),
+    ...(idLabels[id] ?? {}),
+  };
+}
