@@ -27,6 +27,22 @@ describe("App integration", () => {
     await waitFor(() => expect(screen.getByText("Regex 已複製到剪貼簿。")).toBeInTheDocument());
   });
 
+  it("clears all filters and output", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByTestId("mod-search"), "雙王");
+    const includeCheckbox = await screen.findByTestId(/include-/);
+    await user.click(includeCheckbox);
+
+    expect(screen.getByTestId("regex-output").textContent).not.toContain("目前沒有產生 Regex");
+
+    await user.click(screen.getByTestId("clear-all"));
+
+    expect(screen.getByTestId("mod-search")).toHaveValue("");
+    expect(screen.getByTestId("regex-output").textContent).toContain("目前沒有產生 Regex");
+  });
+
   it("uses corrected built-in labels without dictionary editing", async () => {
     const user = userEvent.setup();
     render(<App />);

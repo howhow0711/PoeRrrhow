@@ -156,6 +156,25 @@ function App() {
     setCopyStatus("Regex 已複製到剪貼簿。");
   }
 
+  function clearAll() {
+    setIncludeKeys([]);
+    setExcludeKeys([]);
+    setCollapsedGroups({});
+    setMatchMode("all");
+    setShowNightmareMods(false);
+    setSearch("");
+    setQuantity("");
+    setPackSize("");
+    setItemRarity("");
+    setMapDropChance("");
+    setQuality(defaultQuality);
+    setAnyQuality(true);
+    setRarity(defaultRarity);
+    setCorrupted(defaultToggle);
+    setUnidentified({ enabled: false, include: false });
+    setCopyStatus("");
+  }
+
   function toggleSelection(key: MapModKey, mode: "include" | "exclude", checked: boolean) {
     if (mode === "include") {
       setIncludeKeys((current) => (checked ? [...new Set([...current, key])] : current.filter((item) => item !== key)));
@@ -200,9 +219,14 @@ function App() {
           <div className="result-box" data-testid="regex-output">{output.regex || "(目前沒有產生 Regex)"}</div>
           {copyStatus ? <p className="copy-status">{copyStatus}</p> : null}
         </div>
-        <button data-testid="copy-regex" className="primary-button" onClick={copyRegex}>
-          複製
-        </button>
+        <div className="result-actions">
+          <button data-testid="clear-all" className="secondary-button" onClick={clearAll}>
+            全部清除
+          </button>
+          <button data-testid="copy-regex" className="primary-button" onClick={copyRegex}>
+            複製
+          </button>
+        </div>
       </section>
 
       <section className="controls-panel">
