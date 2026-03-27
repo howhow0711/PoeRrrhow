@@ -286,10 +286,12 @@ function App() {
           <article key={category} className="mod-group">
             <header>
               <button type="button" className="group-toggle" onClick={() => toggleGroup(category)} aria-expanded={!collapsed}>
-                <span className={`toggle-arrow ${collapsed ? "collapsed" : ""}`}>▾</span>
-                <h3>{category}</h3>
+                <span className="group-toggle-main">
+                  <span className={`toggle-arrow ${collapsed ? "collapsed" : ""}`}>▾</span>
+                  <h3>{category}</h3>
+                </span>
+                <span className="group-count">{mods.length} 項</span>
               </button>
-              <span>{mods.length} 項</span>
             </header>
             {!collapsed ? (
             <div className="mod-list two-col-list">

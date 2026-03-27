@@ -241,13 +241,27 @@ input {
 }
 
 .group-toggle {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between;
+  width: 100%;
   border: 0;
   padding: 0;
   color: inherit;
   background: transparent;
+  text-align: left;
+}
+
+.group-toggle-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.group-count {
+  color: #aab1c7;
+  white-space: nowrap;
 }
 
 .toggle-arrow {
