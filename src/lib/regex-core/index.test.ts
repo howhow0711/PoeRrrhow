@@ -12,10 +12,10 @@ describe("generateMapRegex", () => {
     const actual = generateMapRegex(generatorFixtures[1].input);
     expect(actual.regex).toContain("已汙染");
     expect(actual.regex).toContain("!未鑑定");
-    expect(actual.regex).toContain("物品數量.*");
-    expect(actual.regex).toContain("怪物群大小.*");
-    expect(actual.regex).toContain("物品稀有度.*");
-    expect(actual.regex).toContain("更多地圖.*");
+    expect(actual.regex).toContain("物品數量.+([8-9]\\d|\\d{3})");
+    expect(actual.regex).toContain("怪物群大小.*([2][5-9]|[3-9]\\d|\\d{3})");
+    expect(actual.regex).toContain("物品稀有度.+([6-9]\\d|\\d{3})");
+    expect(actual.regex).toContain("更多地圖.*([4-9]\\d|\\d{3})");
     expect(actual.regex).toContain("稀有度: 稀有");
     expect(actual.regex).not.toContain("m q.*");
     expect(actual.regex).not.toContain("tified");
@@ -25,8 +25,8 @@ describe("generateMapRegex", () => {
 
   it("supports chinese quality filters in any/all combinations", () => {
     const actual = generateMapRegex(generatorFixtures[2].input);
-    expect(actual.regex).toContain("品質.*更多通貨.*");
-    expect(actual.regex).toContain("品質.*更多命運卡.*");
+    expect(actual.regex).toContain("品質.*更多通貨.*\\d{2}");
+    expect(actual.regex).toContain("品質.*更多命運卡.*\\d{2}");
   });
 
   it("returns selected mods with curated chinese labels", () => {
@@ -68,5 +68,37 @@ describe("generateMapRegex", () => {
     expect(actual.regex).toContain("玩家被時空鎖鏈詛咒");
     expect(actual.regex).toContain("玩家被元素要害詛咒");
     expect(actual.regex).not.toMatch(/[a-z]{3,}/i);
+  });
+
+  it("matches stash-style threshold patterns for current numeric fields", () => {
+    const actual = generateMapRegex({
+      includeKeys: [],
+      excludeKeys: [],
+      matchMode: "all",
+      quantity: "100",
+      packSize: "35",
+      itemRarity: "0",
+      mapDropChance: "5",
+      quality: {
+        regular: "",
+        currency: "176",
+        divination: "",
+        rarity: "",
+        packSize: "",
+        scarab: "150",
+      },
+      anyQuality: false,
+      rarity: { normal: true, magic: true, rare: true, include: true },
+      corrupted: { enabled: false, include: true },
+      unidentified: { enabled: false, include: false },
+      showNightmareMods: false,
+    });
+
+    expect(actual.regex).toContain("物品數量.+\\d{3}");
+    expect(actual.regex).toContain("怪物群大小.*([3][5-9]|[4-9]\\d|\\d{3})");
+    expect(actual.regex).toContain("物品稀有度.+\\d");
+    expect(actual.regex).toContain("更多地圖.*([5-9]|\\d{2})");
+    expect(actual.regex).toContain("品質.*更多聖甲蟲.+([1][5-9]\\d|[2-9]\\d\\d|\\d{4})");
+    expect(actual.regex).toContain("品質.*更多通貨.*([1][7][6-9]|[1][8-9]\\d|[2-9]\\d\\d|\\d{4})");
   });
 });

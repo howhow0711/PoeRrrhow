@@ -52,9 +52,8 @@ code {
 .mod-group,
 .warning-box {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(14, 18, 28, 0.78);
-  backdrop-filter: blur(16px);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  background: rgba(14, 18, 28, 0.92);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
   border-radius: 20px;
 }
 
@@ -64,10 +63,18 @@ code {
   padding: 16px 18px;
 }
 
+.toolbar,
+.result-strip {
+  background: rgba(14, 18, 28, 0.78);
+  backdrop-filter: blur(10px);
+}
+
 .result-strip {
   position: sticky;
   top: 14px;
   z-index: 20;
+  will-change: transform;
+  contain: layout paint;
 }
 
 .toolbar,
@@ -245,6 +252,9 @@ input {
 
 .mod-group {
   overflow: hidden;
+  content-visibility: auto;
+  contain: layout paint style;
+  contain-intrinsic-size: 320px;
 }
 
 .mod-group header {
@@ -307,6 +317,7 @@ input {
   align-items: center;
   padding: 14px 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.015);
 }
 
 .mod-main,

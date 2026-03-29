@@ -1,26 +1,25 @@
 import type { Regex } from "./vendor/upstream/GeneratedTypes";
-import { generateNumberRegex } from "./vendor/upstream/GenerateNumberRegex";
 import { idToRegex, optimizeRegexFromIds } from "./vendor/upstream/OptimizeRegexResult";
 import type { MapSettings } from "./vendor/upstream/MapSettings";
 
 type QualityType = "regular" | "currency" | "divination" | "rarity" | "pack size" | "scarab";
 
 const qualityPrefixes: Record<QualityType, string> = {
-  regular: "品質.*物品數量.*",
+  regular: "品質.*物品數量.+",
   currency: "品質.*更多通貨.*",
   divination: "品質.*更多命運卡.*",
-  rarity: "品質.*物品稀有度.*",
+  rarity: "品質.*物品稀有度.+",
   "pack size": "品質.*怪物群大小.*",
-  scarab: "品質.*更多聖甲蟲.*",
+  scarab: "品質.*更多聖甲蟲.+",
 };
 
 export function generateChineseMapRegex(settings: MapSettings, regex: Regex<unknown>): string {
   const exclusions = generateBadMods(settings, regex);
   const inclusions = generateGoodMods(settings, regex);
-  const quantity = addQuantifier("物品數量.*", generateNumberRegex(settings.quantity, settings.optimizeQuant));
-  const packsize = addQuantifier("怪物群大小.*", generateNumberRegex(settings.packsize, settings.optimizePacksize));
-  const mapDrop = addQuantifier("更多地圖.*", generateNumberRegex(settings.mapDropChance, false));
-  const itemRarity = addQuantifier("物品稀有度.*", generateNumberRegex(settings.itemRarity, false));
+  const quantity = addQuantifier("物品數量.+", generateStashNumberRegex(settings.quantity));
+  const packsize = addQuantifier("怪物群大小.*", generateStashNumberRegex(settings.packsize));
+  const mapDrop = addQuantifier("更多地圖.*", generateStashNumberRegex(settings.mapDropChance));
+  const itemRarity = addQuantifier("物品稀有度.+", generateStashNumberRegex(settings.itemRarity));
   const quality = qualityQualifier(settings);
   const rarity = addRarityRegex(settings.rarity.normal, settings.rarity.magic, settings.rarity.rare, settings.rarity.include);
   const corrupted = corruptedMapCheck(settings);
@@ -44,12 +43,12 @@ function corruptedMapCheck(settings: MapSettings): string {
 
 function qualityQualifier(settings: MapSettings): string {
   const result = [
-    addQuantifier(qualityPrefixes.regular, generateNumberRegex(settings.quality.regular, settings.optimizeQuality)),
-    addQuantifier(qualityPrefixes.currency, generateNumberRegex(settings.quality.currency, settings.optimizeQuality)),
-    addQuantifier(qualityPrefixes.divination, generateNumberRegex(settings.quality.divination, settings.optimizeQuality)),
-    addQuantifier(qualityPrefixes.rarity, generateNumberRegex(settings.quality.rarity, settings.optimizeQuality)),
-    addQuantifier(qualityPrefixes["pack size"], generateNumberRegex(settings.quality.packSize, settings.optimizeQuality)),
-    addQuantifier(qualityPrefixes.scarab, generateNumberRegex(settings.quality.scarab, settings.optimizeQuality)),
+    addQuantifier(qualityPrefixes.regular, generateStashNumberRegex(settings.quality.regular)),
+    addQuantifier(qualityPrefixes.currency, generateStashNumberRegex(settings.quality.currency)),
+    addQuantifier(qualityPrefixes.divination, generateStashNumberRegex(settings.quality.divination)),
+    addQuantifier(qualityPrefixes.rarity, generateStashNumberRegex(settings.quality.rarity)),
+    addQuantifier(qualityPrefixes["pack size"], generateStashNumberRegex(settings.quality.packSize)),
+    addQuantifier(qualityPrefixes.scarab, generateStashNumberRegex(settings.quality.scarab)),
   ].filter(Boolean);
 
   if (!settings.anyQuality) {
@@ -103,5 +102,81 @@ function addRarityRegex(normal: boolean, magic: boolean, rare: boolean, include:
 
 function addQuantifier(prefix: string, value: string): string {
   if (!value) return "";
-  return `"${prefix}${value}%"`;
+  return `"${prefix}${value}"`;
+}
+
+function generateStashNumberRegex(number: string): string {
+  const digits = number.match(/\d+/g)?.join("") ?? "";
+  if (!digits) return "";
+
+  const threshold = Number(digits);
+  if (Number.isNaN(threshold)) return "";
+  if (threshold <= 0) return "\\d";
+
+  if (threshold < 10) {
+    return `(${digitRange(threshold, 9)}|\\d{2})`;
+  }
+
+  if (threshold === 10) {
+    return "\\d{2}";
+  }
+
+  if (threshold < 100) {
+    const tens = Math.floor(threshold / 10);
+    const ones = threshold % 10;
+
+    if (ones === 0) {
+      return `(${digitRange(tens, 9)}\\d|\\d{3})`;
+    }
+
+    if (tens === 9) {
+      return `(${digit(tens)}${digitRange(ones, 9)}|\\d{3})`;
+    }
+
+    return `(${digit(tens)}${digitRange(ones, 9)}|${digitRange(tens + 1, 9)}\\d|\\d{3})`;
+  }
+
+  if (threshold === 100) {
+    return "\\d{3}";
+  }
+
+  if (threshold < 1000) {
+    const hundreds = Math.floor(threshold / 100);
+    const tens = Math.floor(threshold / 10) % 10;
+    const ones = threshold % 10;
+    const parts: string[] = [];
+
+    if (tens === 0 && ones === 0) {
+      if (hundreds === 1) {
+        return "\\d{3}";
+      }
+      return `(${digitRange(hundreds, 9)}\\d\\d|\\d{4})`;
+    }
+
+    if (ones === 0) {
+      parts.push(`${digit(hundreds)}${digitRange(tens, 9)}\\d`);
+    } else {
+      parts.push(`${digit(hundreds)}${digit(tens)}${digitRange(ones, 9)}`);
+      if (tens < 9) {
+        parts.push(`${digit(hundreds)}${digitRange(tens + 1, 9)}\\d`);
+      }
+    }
+
+    if (hundreds < 9) {
+      parts.push(`${digitRange(hundreds + 1, 9)}\\d\\d`);
+    }
+    parts.push("\\d{4}");
+
+    return `(${parts.join("|")})`;
+  }
+
+  return `\\d{${String(threshold).length}}`;
+}
+
+function digit(value: number): string {
+  return `[${value}]`;
+}
+
+function digitRange(start: number, end: number): string {
+  return start === end ? `[${start}]` : `[${start}-${end}]`;
 }
